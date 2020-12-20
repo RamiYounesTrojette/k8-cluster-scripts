@@ -1,3 +1,4 @@
+sudo swapoff -a
 sudo hostnamectl set-hostname "master"
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
@@ -16,11 +17,10 @@ sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
-sudo swapoff -a
 sudo kubeadm init --ignore-preflight-errors stringSlice
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 sudo kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 sudo apt-get update -y
-sudo kubeadm init
+
