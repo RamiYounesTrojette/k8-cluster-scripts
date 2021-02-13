@@ -21,6 +21,7 @@ app.post('/bind', (req, res) => {
         console.log('key generated');  
         let publicKey = req.body.key;
         fs.appendFileSync(path.join(os.homedir(),'.ssh/authorized_keys'), publicKey);
+        fs.appendFileSync(path.join(os.homedir(),'/etc/hosts'), req.body.slaveIp + " " + req.body.nodeName);
         cp.execFile('../slave.sh', function(err, stdout, stderr){
             var token = 'sudo ' + req.body.token.replace(/\\n/g, '').replace(/\\\n/g, '');
              console.log(token);
