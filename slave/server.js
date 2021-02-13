@@ -20,7 +20,7 @@ app.post('/bind', (req, res) => {
     cp.exec('ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa', function(errrr, stdouttt, stderrrr){
         console.log('key generated');  
         let publicKey = req.body.key;
-        fs.appendFileSync(path.join(os.homedir(),'.ssh/authorized_keys.pub'), publicKey);
+        fs.appendFileSync(path.join(os.homedir(),'.ssh/authorized_keys'), publicKey);
         cp.execFile('../slave.sh', function(err, stdout, stderr){
             var token = 'sudo ' + req.body.token.replace(/\\n/g, '').replace(/\\\n/g, '');
              console.log(token);
