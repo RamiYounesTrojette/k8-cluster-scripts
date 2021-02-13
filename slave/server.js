@@ -3,6 +3,8 @@ const cp = require('child_process');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const app = express();
 const port = 8090;
 
@@ -18,7 +20,7 @@ app.post('/bind', (req, res) => {
     cp.exec('ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa', function(errrr, stdouttt, stderrrr){
         console.log('key generated');  
         let publicKey = req.body.key;
-        fs.appendFileSync('~/.ssh/authorized_keys', publicKey);
+        fs.appendFileSync(path.join(os.homedir(),'.ssh/authorized_keys.pub'), publicKey);
         cp.execFile('../slave.sh', function(err, stdout, stderr){
             var token = 'sudo ' + req.body.token.replace(/\\n/g, '').replace(/\\\n/g, '');
              console.log(token);
