@@ -33,7 +33,8 @@ app.post('/', (req, res) => {
             console.log('finished binding');
             var data = querystring.stringify({
                 token:stdout.substring(stdout.lastIndexOf('kubeadm join'), stdout.lastIndexOf('serviceaccount/weave-net created')),
-                key: publicKey
+                key: publicKey,
+                slaveIp: req.body.slave
             });
             var options = {
              host: req.body.slave,
