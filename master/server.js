@@ -30,7 +30,7 @@ app.post('/', (req, res) => {
     console.log('starting kub binding');
     if(publicKey == ""){
         cp.exec('ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa', function(errr, stdoutt, stderrr){
-            cp.exec('sudo -- sh -c "echo ' + req.body.slave + ' node' + nodeCounter' + ' >> /etc/hosts"', function(errrr, stdouttt, stderrrr){
+            cp.exec('sudo -- sh -c "echo ' + req.body.slave + ' node' + nodeCounter + ' >> /etc/hosts"', function(errrr, stdouttt, stderrrr){
                 nodeCounter++;
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
@@ -66,7 +66,7 @@ app.post('/', (req, res) => {
             });
         });
     } else {
-        cp.exec('sudo -- sh -c "echo ' + req.body.slave + ' node' + nodeCounter' + ' >> /etc/hosts"', function(errrr, stdouttt, stderrrr){
+        cp.exec('sudo -- sh -c "echo ' + req.body.slave + ' node' + nodeCounter + ' >> /etc/hosts"', function(errrr, stdouttt, stderrrr){
             var data = querystring.stringify({
                         token: token,
                         key: publicKey
