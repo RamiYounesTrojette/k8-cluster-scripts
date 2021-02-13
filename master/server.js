@@ -5,6 +5,8 @@ const http = require('http');
 const querystring = require('querystring');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const app = express();
 const port = 8090;
 
@@ -26,7 +28,7 @@ app.post('/', (req, res) => {
     console.log('starting kub binding');
     cp.exec('ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa', function(errr, stdoutt, stderrr){
         console.log('key generated');  
-        publicKey = fs.readFileSync('~/.ssh/id_rsa.pub', 'utf8');
+        publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
         cp.execFile('../master.sh', function(err, stdout, stderr){
             console.log('finished binding');
             var data = querystring.stringify({
