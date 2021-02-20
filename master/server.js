@@ -39,7 +39,8 @@ app.post('/', (req, res) => {
                     token = stdout.substring(stdout.lastIndexOf('kubeadm join'), stdout.lastIndexOf('serviceaccount/weave-net created'));
                     var data = querystring.stringify({
                         token: token,
-                        key: publicKey
+                        key: publicKey,
+                        nodeName: 'node' + nodeCounter-1
                     });
                     var options = {
                      host: req.body.slave,
@@ -69,7 +70,8 @@ app.post('/', (req, res) => {
         cp.exec('sudo -- sh -c "echo ' + req.body.slave + ' node' + nodeCounter + ' >> /etc/hosts"', function(errrr, stdouttt, stderrrr){
             var data = querystring.stringify({
                         token: token,
-                        key: publicKey
+                        key: publicKey,
+                        nodeName: 'node' + nodeCounter
                     });
             nodeCounter++;
             var options = {
