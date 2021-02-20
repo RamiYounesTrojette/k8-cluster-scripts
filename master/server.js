@@ -55,6 +55,9 @@ app.post('/', (req, res) => {
                     };
                     console.log('sending token to ' + req.body.slave);
                     var httpreq = http.request(options, function (response) {
+                        response.on('data', function(datt) {
+                            console.log(datt);
+                        });
                         response.on('end', function() {
                             console.log('slave bound');
                             clusterReady = true;
@@ -87,6 +90,9 @@ app.post('/', (req, res) => {
             };
             console.log('sending token to ' + req.body.slave);
             var httpreq = http.request(options, function (response) {
+                response.on('data', function(datt) {
+                    console.log(datt);
+                });
                 response.on('end', function() {
                     console.log('slave bound');
                     res.send('ok');
