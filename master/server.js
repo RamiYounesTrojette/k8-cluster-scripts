@@ -31,7 +31,7 @@ app.post('/', (req, res) => {
     if(publicKey == ""){
         cp.exec('ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa', function(errr, stdoutt, stderrr){
             cp.exec('sudo -- sh -c "echo ' + req.body.slave + ' node' + nodeCounter + ' >> /etc/hosts"', function(errrr, stdouttt, stderrrr){
-                nodeCounter++;
+                
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
                 cp.execFile('../master.sh', function(err, stdout, stderr){
@@ -40,8 +40,9 @@ app.post('/', (req, res) => {
                     var data = querystring.stringify({
                         token: token,
                         key: publicKey,
-                        slaveName: 'node' + (nodeCounter-1)
+                        slaveName: 'node' + nodeCounter
                     });
+                    nodeCounter++;
                     var options = {
                      host: req.body.slave,
                      port: 8090,
