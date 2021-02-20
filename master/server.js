@@ -40,7 +40,7 @@ app.post('/', (req, res) => {
                     var data = querystring.stringify({
                         token: token,
                         key: publicKey,
-                        nodeName: 'node' + nodeCounter-1
+                        slaveName: 'node' + (nodeCounter-1)
                     });
                     var options = {
                      host: req.body.slave,
@@ -71,7 +71,7 @@ app.post('/', (req, res) => {
             var data = querystring.stringify({
                         token: token,
                         key: publicKey,
-                        nodeName: 'node' + nodeCounter
+                        slaveName: 'node' + nodeCounter
                     });
             nodeCounter++;
             var options = {
