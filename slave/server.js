@@ -21,13 +21,15 @@ app.post('/bind', (req, res) => {
         console.log('key generated');  
         let publicKey = req.body.key;
         fs.appendFileSync(path.join(os.homedir(),'.ssh/authorized_keys'), publicKey);
-        cp.execFile('../slave.sh', function(err, stdout, stderr){
-            var token = 'sudo ' + req.body.token.replace(/\\n/g, '').replace(/\\\n/g, '');
-             console.log(token);
-             cp.exec(token, function(errr, stdoutt, stderrr){
-                 console.log('bound');
-                 res.send('OK');
-             });
+        cp.exec('sudo hostnamectl set-hostname "' + req.body.nodeName + '"', function(errrrr, stdoutttt, stderrrrr){
+            cp.execFile('../slave.sh', function(err, stdout, stderr){
+                var token = 'sudo ' + req.body.token.replace(/\\n/g, '').replace(/\\\n/g, '');
+                console.log(token);
+                cp.exec(token, function(errr, stdoutt, stderrr){
+                    console.log('bound');
+                    res.send('OK');
+                });
+            });
         });
     });
 });
