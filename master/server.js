@@ -64,8 +64,8 @@ app.post('/', (req, res) => {
                             res.send('ok');
                         });
                     });
-                    httpreq.write(data);
-                    httpreq.end();
+                    //httpreq.write(data);
+                    httpreq.end(data);
                     console.log('token sent');
                 });
             });
@@ -98,8 +98,8 @@ app.post('/', (req, res) => {
                     res.send('ok');
                 });
             });
-            httpreq.write(data);
-            httpreq.end();
+            //httpreq.write(data);
+            httpreq.end(data);
             console.log('token sent');
         });
     }
