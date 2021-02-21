@@ -61,7 +61,7 @@ app.post('/', (req, res) => {
                         response.on('end', function() {
                             console.log('slave bound');
                             clusterReady = true;
-                            res.send('ok');
+                            res.status(200).json('OK');
                         });
                     });
                     //httpreq.write(data);
@@ -95,7 +95,7 @@ app.post('/', (req, res) => {
                 });
                 response.on('end', function() {
                     console.log('slave bound');
-                    res.send('ok');
+                    res.status(200).json('OK');
                 });
             });
             //httpreq.write(data);
