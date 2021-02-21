@@ -104,6 +104,7 @@ app.post('/', (req, res) => {
         });
     }
 });
-app.listen(port, () => {
+var listener = app.listen(port, () => {
         console.log(`Web Server listening at ${port}`);
 });
+listener.timeout = 3600000;
