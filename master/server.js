@@ -61,11 +61,11 @@ app.post('/', (req, res) => {
                         response.on('end', function() {
                             console.log('slave bound');
                             clusterReady = true;
-                            res.status(200).json('OK');
+                            res.send('OK');
                         });
                     });
-                    //httpreq.write(data);
-                    httpreq.end(data);
+                    httpreq.write(data);
+                    httpreq.end();
                     console.log('token sent');
                 });
             });
@@ -95,11 +95,11 @@ app.post('/', (req, res) => {
                 });
                 response.on('end', function() {
                     console.log('slave bound');
-                    res.status(200).json('OK');
+                    res.send('OK');
                 });
             });
-            //httpreq.write(data);
-            httpreq.end(data);
+            httpreq.write(data);
+            httpreq.end();
             console.log('token sent');
         });
     }
