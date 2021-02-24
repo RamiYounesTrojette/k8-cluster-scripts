@@ -36,9 +36,27 @@ app.post('/', (req, res) => {
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
                 cp.execFile('../master.sh', function(err, stdout, stderr){
                     console.log('finished binding');
-                        fs.writeFile("errors", err, null); 
-                        fs.writeFile("stdout", stdout, null; 
-                        fs.writeFile("stderr", stderr,null); 
+                        fs.writeFile("./errors", err, err => {
+                            if (err) {
+                              console.error(err)
+                              return
+                            }
+                            //file written successfully
+                          }); 
+                        fs.writeFile("./stdout", stdout, err => {
+                            if (err) {
+                              console.error(err)
+                              return
+                            }
+                            //file written successfully
+                          }; 
+                        fs.writeFile("./stderr", stderr,err => {
+                            if (err) {
+                              console.error(err)
+                              return
+                            }
+  //file written successfully
+}); 
 
                     token = stdout.substring(stdout.lastIndexOf('kubeadm join'), stdout.lastIndexOf('serviceaccount/weave-net created'));
                     var data = querystring.stringify({
