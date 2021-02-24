@@ -99,7 +99,7 @@ app.post('/', (req, res) => {
                 });
                 response.on('end', function() {
                     console.log('slave bound');
-                    res.send('OK');
+                    res.send({'msg': 'OK'});
                 });
             });
             httpreq.write(data);
