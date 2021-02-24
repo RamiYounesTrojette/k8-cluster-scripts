@@ -36,21 +36,21 @@ app.post('/', (req, res) => {
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
                 cp.execFile('../master.sh', function(err, stdout, stderr){
                     console.log('finished binding');
-                        fs.writeFile("./errors", err, err => {
+                        fs.writeFile("./errors.txt", err, err => {
                             if (err) {
                               console.error(err)
                               return
                             }
                             //file written successfully
                           }); 
-                        fs.writeFile("./stdout", stdout, err => {
+                        fs.writeFile("./stdout.txt", stdout, err => {
                             if (err) {
                               console.error(err)
                               return
                             }
                             //file written successfully
                           }; 
-                        fs.writeFile("./stderr", stderr,err => {
+                        fs.writeFile("./stderr.txt", stderr,err => {
                             if (err) {
                               console.error(err)
                               return
