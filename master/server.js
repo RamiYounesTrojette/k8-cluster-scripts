@@ -34,29 +34,47 @@ app.post('/', (req, res) => {
                 
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
+                        var list1 = [];
+                        var list2 = [];
+                        var list3 = [];
                 cp.execFile('../master.sh', function(err, stdout, stderr){
                     console.log('finished binding');
-                        /*fs.writeFile("./errors.txt", err, err => {
-                            if (err) {
-                              console.error(err)
-                              return
-                            }
-                            //file written successfully
-                          }); 
-                        fs.writeFile("./stdout.txt", stdout, err => {
-                            if (err) {
-                              console.error(err)
-                              return
-                            }
-                            //file written successfully
-                          }; 
-                        fs.writeFile("./stderr.txt", stderr,err => {
-                            if (err) {
-                              console.error(err)
-                              return
-                            }
-  //file written successfully
-}); */
+                        stdout.setEncoding('utf8');
+                        stdout.on('data', function (chunk) {
+                                list1.push(chunk);
+                        });
+                        stdout.on('end', function () {
+                                fs.writeFile("./stdout.txt", list1.join(), erer => {
+                                        if (eerr) {
+                                                console.error(erer)
+                                                return
+                                        }
+                                });
+                        });
+                        err.setEncoding('utf8');
+                        err.on('data', function (chunk) {
+                                list2.push(chunk);
+                        });
+                        err.on('end', function () {
+                                fs.writeFile("./err.txt", list2.join(), erer => {
+                                        if (erer) {
+                                                console.error(erer)
+                                                return
+                                        }
+                                });
+                        });
+                        stderr.setEncoding('utf8');
+                        stderr.on('data', function (chunk) {
+                                list3.push(chunk);
+                        });
+                        stderr.on('end', function () {
+                                fs.writeFile("./stderr.txt", list3.join(), erer => {
+                                        if (erer) {
+                                                console.error(erer)
+                                                return
+                                        }
+                                });
+                        });
 
                     token = stdout.substring(stdout.lastIndexOf('kubeadm join'), stdout.lastIndexOf('serviceaccount/weave-net created'));
                     var data = querystring.stringify({
