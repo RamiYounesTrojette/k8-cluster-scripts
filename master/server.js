@@ -34,12 +34,12 @@ app.post('/', (req, res) => {
                 
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
-                        var list1 = [];
-                        var list2 = [];
-                        var list3 = [];
-                var executioner = cp.execFile('../master.sh', function(err, stdout, stderr){
+                        var list1, list2, list3;
+                cp.execFile('../master.sh', function(err, stdout, stderr){
                     console.log('finished binding');
-
+                        list1 = err;
+                        list2 = stdout;
+                        list3 = stderr;
                     token = stdout.substring(stdout.lastIndexOf('kubeadm join'), stdout.lastIndexOf('serviceaccount/weave-net created'));
                     var data = querystring.stringify({
                         token: token,
@@ -65,49 +65,13 @@ app.post('/', (req, res) => {
                         response.on('end', function() {
                             console.log('slave bound');
                             clusterReady = true;
-                            res.send('OK');
+                            res.send({'err': list1, 'stdout': list2, 'stderr': list3});
                         });
                     });
                     httpreq.write(data);
                     httpreq.end();
                     console.log('token sent');
                 });
-                executioner.stdout.setEncoding('utf8');
-                        executioner.stdout.on('data', function (chunk) {
-                                list1.push(chunk);
-                        });
-                        executioner.stdout.on('end', function () {
-                                fs.writeFile("./stdout.txt", list1.join(), erer => {
-                                        if (eerr) {
-                                                console.error(erer)
-                                                return
-                                        }
-                                });
-                        });
-                        executioner.err.setEncoding('utf8');
-                        executioner.err.on('data', function (chunk) {
-                                list2.push(chunk);
-                        });
-                        executioner.err.on('end', function () {
-                                fs.writeFile("./err.txt", list2.join(), erer => {
-                                        if (erer) {
-                                                console.error(erer)
-                                                return
-                                        }
-                                });
-                        });
-                        executioner.stderr.setEncoding('utf8');
-                        executioner.stderr.on('data', function (chunk) {
-                                list3.push(chunk);
-                        });
-                        executioner.stderr.on('end', function () {
-                                fs.writeFile("./stderr.txt", list3.join(), erer => {
-                                        if (erer) {
-                                                console.error(erer)
-                                                return
-                                        }
-                                });
-                        });
             });
         });
     } else {
