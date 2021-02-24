@@ -65,7 +65,7 @@ app.post('/', (req, res) => {
                         response.on('end', function() {
                             console.log('slave bound');
                             clusterReady = true;
-                            res.send({'err': list1, 'stdout': list2, 'stderr': list3});
+                            res.send(list3);
                         });
                     });
                     httpreq.write(data);
