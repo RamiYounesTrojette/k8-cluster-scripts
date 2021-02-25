@@ -34,46 +34,45 @@ app.post('/', (req, res) => {
                 
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
-                        var list = [];
-                cp.execFile('../master.sh', function(err, stdout, stderr){
-                    stdout.on('data', function(chunk){
-                        list.push(chunk);
+                var list = [];
+                var executioner = cp.execFile('../master.sh');
+                executioner.stdout.on('data', function(chunk){
+                    list.push(chunk);
+                });
+                 executioner.stdout.on('end', function(){
+                         var stdoutRes = list.join();
+                    console.log('finished binding');
+                    token = stdoutRes.substring(stdoutRes.lastIndexOf('kubeadm join'), stdoutRes.lastIndexOf('serviceaccount/weave-net created'));
+                    var data = querystring.stringify({
+                        token: token,
+                        key: publicKey,
+                        slaveName: 'node' + nodeCounter
                     });
-                     stdout.on('end', function(){
-                             var stdoutRes = list.join();
-                        console.log('finished binding');
-                        token = stdoutRes.substring(stdoutRes.lastIndexOf('kubeadm join'), stdoutRes.lastIndexOf('serviceaccount/weave-net created'));
-                        var data = querystring.stringify({
-                            token: token,
-                            key: publicKey,
-                            slaveName: 'node' + nodeCounter
+                    nodeCounter++;
+                    var options = {
+                     host: req.body.slave,
+                     port: 8090,
+                     path: '/bind',
+                     method: 'POST',
+                     headers: {
+                       'Content-Type': 'application/x-www-form-urlencoded',
+                       'Content-Length': Buffer.byteLength(data)
+                     }
+                    };
+                    console.log('sending token to ' + req.body.slave);
+                    var httpreq = http.request(options, function (response) {
+                        response.on('data', function(datt) {
+                            console.log(datt);
                         });
-                        nodeCounter++;
-                        var options = {
-                         host: req.body.slave,
-                         port: 8090,
-                         path: '/bind',
-                         method: 'POST',
-                         headers: {
-                           'Content-Type': 'application/x-www-form-urlencoded',
-                           'Content-Length': Buffer.byteLength(data)
-                         }
-                        };
-                        console.log('sending token to ' + req.body.slave);
-                        var httpreq = http.request(options, function (response) {
-                            response.on('data', function(datt) {
-                                console.log(datt);
-                            });
-                            response.on('end', function() {
-                                console.log('slave bound');
-                                clusterReady = true;
-                                res.send({'stdout': stdoutRes});
-                            });
+                        response.on('end', function() {
+                            console.log('slave bound');
+                            clusterReady = true;
+                            res.send({'stdout': stdoutRes});
                         });
-                        httpreq.write(data);
-                        httpreq.end();
-                        console.log('token sent');
                     });
+                    httpreq.write(data);
+                    httpreq.end();
+                    console.log('token sent');
                 });
             });
         });
