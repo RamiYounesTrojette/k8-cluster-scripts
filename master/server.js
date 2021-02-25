@@ -35,12 +35,8 @@ app.post('/', (req, res) => {
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
                 var list = [];
-                var executioner = cp.execFile('../master.sh');
-                executioner.stdout.on('data', function(chunk){
-                    list.push(chunk);
-                });
-                 executioner.stdout.on('end', function(){
-                         var stdoutRes = list.join();
+                var executioner = cp.execFileSync('../master.sh');
+                         var stdoutRes = executioner.toString();
                     console.log('finished binding');
                     token = stdoutRes.substring(stdoutRes.lastIndexOf('kubeadm join'), stdoutRes.lastIndexOf('serviceaccount/weave-net created'));
                     var data = querystring.stringify({
@@ -73,7 +69,6 @@ app.post('/', (req, res) => {
                     httpreq.write(data);
                     httpreq.end();
                     console.log('token sent');
-                });
             });
         });
     } else {
