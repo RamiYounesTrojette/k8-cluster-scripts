@@ -39,7 +39,7 @@ app.post('/', (req, res) => {
                     cp.execSync('curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -');
                     cp.execSync('sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \ $(lsb_release -cs) \ stable"');
                     cp.execSync('curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -');
-                    cp.execSync('cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list \n deb https://apt.kubernetes.io/ kubernetes-xenial main \n EOF');
+                    cp.execSync('echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list');
                     cp.execSync('sudo apt-get update -y');
                     cp.execSync('sudo apt-get install docker-ce -y');
                     cp.execSync('sudo apt-get update -y');
