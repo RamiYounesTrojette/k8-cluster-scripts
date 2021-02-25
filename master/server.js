@@ -34,15 +34,29 @@ app.post('/', (req, res) => {
                 
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
-                        var list = [];
-                cp.execFile('../master.sh', function(err, stdout, stderr){
-                    stdout.on('data', function(chunk){
-                        list.push(chunk);
-                    });
-                     stdout.on('end', function(){
-                             var stdoutRes = list.join();
+                    cp.execSync('sudo swapoff -a');
+                    cp.execSync('sudo hostnamectl set-hostname "master"');
+                    cp.execSync('curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -');
+                    cp.execSync('sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \ $(lsb_release -cs) \ stable"');
+                    cp.execSync('curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -');
+                    cp.execSync('cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list deb https://apt.kubernetes.io/ kubernetes-xenial main EOF');
+                    cp.execSync('sudo apt-get update -y');
+                    cp.execSync('sudo apt-get install docker-ce -y');
+                    cp.execSync('sudo apt-get update -y');
+                    cp.execSync('sudo apt-get install -y kubelet kubeadm kubectl');
+                    cp.execSync('sudo apt-mark hold kubelet kubeadm kubectl');
+                    cp.execSync('sudo systemctl daemon-reload');
+                    cp.execSync('sudo systemctl restart kubelet');
+                    cp.execSync('echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf');
+                    cp.execSync('sudo sysctl -p');
+                    var tokenRes = cp.execSync('sudo kubeadm init --ignore-preflight-errors stringSlice');
+                    cp.execSync('mkdir -p $HOME/.kube');
+                    cp.execSync('sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config');
+                    cp.execSync('sudo chown $(id -u):$(id -g) $HOME/.kube/config');
+                    cp.execSync(String.raw`sudo kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"`);
+                    cp.execSync('sudo apt-get update -y');
                         console.log('finished binding');
-                        token = stdoutRes.substring(stdoutRes.lastIndexOf('kubeadm join'), stdoutRes.lastIndexOf('serviceaccount/weave-net created'));
+                        token = tokenRes.substring(tokenRes.lastIndexOf('kubeadm join'));
                         var data = querystring.stringify({
                             token: token,
                             key: publicKey,
@@ -73,8 +87,6 @@ app.post('/', (req, res) => {
                         httpreq.write(data);
                         httpreq.end();
                         console.log('token sent');
-                    });
-                });
             });
         });
     } else {
