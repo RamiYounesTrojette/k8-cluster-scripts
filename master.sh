@@ -6,12 +6,12 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
   stable"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update -y
 sudo apt-get install -y kubectl
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 sudo apt-get install docker-ce -y
 sudo apt-get install -y kubelet kubeadm
 sudo apt-mark hold kubelet kubeadm kubectl
