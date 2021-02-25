@@ -81,7 +81,7 @@ app.post('/', (req, res) => {
                             response.on('end', function() {
                                 console.log('slave bound');
                                 clusterReady = true;
-                                res.send({'stdout': stdoutRes});
+                                res.send({'msg': 'OK'});
                             });
                         });
                         httpreq.write(data);
