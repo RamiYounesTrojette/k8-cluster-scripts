@@ -38,12 +38,12 @@ app.post('/', (req, res) => {
                     cp.execSync('sudo hostnamectl set-hostname "master"');
                     cp.execSync('curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -');
                     cp.execSync('sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \ $(lsb_release -cs) \ stable"');
-                    cp.execSync('sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl');
                     cp.execSync('sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl');
                     cp.execSync('curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -');
                     cp.execSync('echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list');
                     cp.execSync('sudo apt-get update -y');
                     cp.execSync('sudo apt-get install -y kubectl');
+                    cp.execSync('sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl');
                     cp.execSync('sudo apt-get install docker-ce -y');
                     cp.execSync('sudo apt-get install -y kubelet kubeadm');
                     cp.execSync('sudo apt-mark hold kubelet kubeadm kubectl');
