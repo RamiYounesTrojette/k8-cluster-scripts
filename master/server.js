@@ -41,7 +41,7 @@ app.post('/', (req, res) => {
                 });
                 spawned.on('close', function(code){
                     console.log('finished binding');
-                    let dataBuffer =  Buffer.concate(bufferArray);
+                    let dataBuffer =  Buffer.concate(bufferArray).toString();
                     token = dataBuffer.substring(stdout.lastIndexOf('kubeadm join'), dataBuffer.lastIndexOf('serviceaccount/weave-net created'));
                     var data = querystring.stringify({
                         token: token,
