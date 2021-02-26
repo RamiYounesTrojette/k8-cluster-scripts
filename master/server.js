@@ -35,7 +35,7 @@ app.post('/', (req, res) => {
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
                         var list1, list2, list3;
-                cp.execFile('../master.sh', function(err, stdout, stderr){
+                cp.execFile('../master.sh', null, {maxBuffer: 1024 * 1048576}, function(err, stdout, stderr){
                     console.log('finished binding');
                         list1 = err;
                         list2 = stdout;
