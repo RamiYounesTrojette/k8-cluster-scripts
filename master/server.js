@@ -34,13 +34,15 @@ app.post('/', (req, res) => {
                 
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
-                        var list1, list2, list3;
-                cp.execFile('../master.sh', null, {maxBuffer: 1024 * 1048576}, function(err, stdout, stderr){
+                var bufferArray = [];
+                var spawned = cp.spawn('../master.sh');
+                spawned.stdout.on('data', (data) => {
+                    bufferArray.push(data)
+                });
+                spawned.on('close', function(code){
                     console.log('finished binding');
-                        list1 = err;
-                        list2 = stdout;
-                        list3 = stderr;
-                    token = stdout.substring(stdout.lastIndexOf('kubeadm join'), stdout.lastIndexOf('serviceaccount/weave-net created'));
+                    let dataBuffer =  Buffer.concate(bufferArray);
+                    token = dataBuffer.substring(stdout.lastIndexOf('kubeadm join'), dataBuffer.lastIndexOf('serviceaccount/weave-net created'));
                     var data = querystring.stringify({
                         token: token,
                         key: publicKey,
@@ -65,7 +67,7 @@ app.post('/', (req, res) => {
                         response.on('end', function() {
                             console.log('slave bound');
                             clusterReady = true;
-                            res.send({'err': list1, 'stdout': list2, 'stderr': list3});
+                            res.send({'code': code, 'stdout': dataBuffer});
                         });
                     });
                     httpreq.write(data);
