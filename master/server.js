@@ -36,6 +36,10 @@ app.post('/', (req, res) => {
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
                 var bufferArray = [];
                 var spawned = cp.spawn('../master.sh');
+                spawned.on("SIGINT", function() { 
+                    console.log("sigint caught"); 
+                    bufferArray.push("sigint caught");
+                });
                 spawned.stdout.on('data', (datas) => {
                     console.log(`stdout: ${datas}`);
                     bufferArray.push(datas);
