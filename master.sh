@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export DEBIAN_FRONTEND=noninteractive
 sudo swapoff -a
 sudo hostnamectl set-hostname "master"
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
