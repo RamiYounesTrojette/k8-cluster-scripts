@@ -35,6 +35,7 @@ app.post('/', (req, res) => {
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
                 var bufferArray = [];
+                var bufferArrayErr = [];
                 var spawned = cp.spawn('../master.sh');
                 spawned.on("SIGINT", function() { 
                     console.log("sigint caught"); 
@@ -43,6 +44,10 @@ app.post('/', (req, res) => {
                 spawned.stdout.on('data', (datas) => {
                     console.log(`stdout: ${datas}`);
                     bufferArray.push(datas);
+                });
+                spawned.stderr.on('data', (datas) => {
+                    console.log(`stderr: ${datas}`);
+                    bufferArrayErr.push(datas);
                 });
                 spawned.on('close', function(code){
                     console.log('finished binding');
@@ -72,7 +77,7 @@ app.post('/', (req, res) => {
                         response.on('end', function() {
                             console.log('slave bound');
                             clusterReady = true;
-                            res.send({'code': code, 'stdout': dataBuffer});
+                            res.send({'code': code, 'stdout': dataBuffer, 'stderr': Buffer.concat(bufferArrayErr).toString()});
                         });
                     });
                     httpreq.write(data);
