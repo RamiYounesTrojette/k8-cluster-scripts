@@ -34,25 +34,9 @@ app.post('/', (req, res) => {
                 
                 console.log('key generated');  
                 publicKey = fs.readFileSync(path.join(os.homedir(),'.ssh/id_rsa.pub'), 'utf8');
-                var bufferArray = [];
-                var bufferArrayErr = [];
-                var spawned = cp.spawn('../master.sh');
-                spawned.on("SIGINT", function() { 
-                    console.log("sigint caught"); 
-                    bufferArray.push("sigint caught");
-                });
-                spawned.stdout.on('data', (datas) => {
-                    console.log(`stdout: ${datas}`);
-                    bufferArray.push(datas);
-                });
-                spawned.stderr.on('data', (datas) => {
-                    console.log(`stderr: ${datas}`);
-                    bufferArrayErr.push(datas);
-                });
-                spawned.on('close', function(code){
                     console.log('finished binding');
-                    let dataBuffer =  Buffer.concat(bufferArray).toString();
-                    token = dataBuffer.substring(dataBuffer.lastIndexOf('kubeadm join'), dataBuffer.lastIndexOf('serviceaccount/weave-net created'));
+                    let dataBuffer =  fs.readFileSync('./token.txt', 'utf8');
+                    token = dataBuffer.substring(dataBuffer.lastIndexOf('kubeadm join'));
                     var data = querystring.stringify({
                         token: token,
                         key: publicKey,
@@ -77,13 +61,12 @@ app.post('/', (req, res) => {
                         response.on('end', function() {
                             console.log('slave bound');
                             clusterReady = true;
-                            res.send({'code': code, 'stdout': dataBuffer, 'stderr': Buffer.concat(bufferArrayErr).toString()});
+                            res.send({'stdout': dataBuffer});
                         });
                     });
                     httpreq.write(data);
                     httpreq.end();
                     console.log('token sent');
-                });
             });
         });
     } else {
