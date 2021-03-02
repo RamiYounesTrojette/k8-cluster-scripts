@@ -49,7 +49,7 @@ app.post('/', (req, res) => {
                         cp.execSync('kubectl create ns test');
                         cp.execSync('kubectl run mypod --image=chentex/random-logger --namespace=test ');
                     } catch (e) {
-                        except = e.stdout;
+                        except = e.stderr.toString();
                     }
                 }
                 console.log('key generated');
