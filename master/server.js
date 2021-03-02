@@ -32,7 +32,7 @@ app.post('/', (req, res) => {
         cp.exec('ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa', function (errr, stdoutt, stderrr) {
             cp.exec('sudo -- sh -c "echo ' + req.body.slave + ' node' + nodeCounter + ' >> /etc/hosts"', function (errrr, stdouttt, stderrrr) {
                 let except = '';
-                if (req.body.cluster == 'CKA-1-1') {
+                if (req.body.cluster == 'CKA1-1') {
                     try {
                         cp.execSync('sudo alias k=kubectl');
                         cp.execSync('sudo snap install etcd');
