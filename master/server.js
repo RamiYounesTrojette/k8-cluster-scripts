@@ -34,18 +34,18 @@ app.post('/', (req, res) => {
                 let except = '';
                 if (req.body.cluster == 'CKA1-1') {
                     try {
-                        cp.execSync('sudo alias k=kubectl');
+                        cp.execSync('alias k=kubectl');
                         cp.execSync('sudo snap install etcd');
-                        cp.execSync('sudo apt install etcd-client');
-                        cp.execSync('sudo mkdir -p $HOME/admin');
-                        cp.execSync('sudo cp -i /etc/kubernetes/admin.conf $HOME/admin/cka.kubeconfig');
+                        cp.execSync('apt install etcd-client');
+                        cp.execSync('mkdir -p $HOME/admin');
+                        cp.execSync('cp -i /etc/kubernetes/admin.conf $HOME/admin/cka.kubeconfig');
                         let conf = fs.readFileSync(path.join(os.homedir(), 'admin/cka.kubeconfig'), 'utf8');
                         if (conf) {
                             conf.replace(/6443/g, '2743');
                             fs.truncateSync(path.join(os.homedir(), 'admin/cka.kubeconfig'));
                             fs.writeFileSync(path.join(os.homedir(), 'admin/cka.kubeconfig'), conf);
                         }
-                        cp.execSync('sudo mkdir -p $HOME/CKA');
+                        cp.execSync('mkdir -p $HOME/CKA');
                         cp.execSync('kubectl create ns test');
                         cp.execSync('kubectl run mypod --image=chentex/random-logger --namespace=test ');
                     } catch (e) {
