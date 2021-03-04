@@ -22,6 +22,7 @@ app.post('/bind', (req, res) => {
         let publicKey = req.body.key;
         fs.appendFileSync(path.join(os.homedir(),'.ssh/authorized_keys'), publicKey);
         cp.exec('sudo hostnamectl set-hostname "' + req.body.slaveName + '"', function(errrrr, stdoutttt, stderrrrr){
+                if(req.body.cluster !== 'CKA1-3'){
             cp.execFile('../slave.sh', function(err, stdout, stderr){
                 var token = 'sudo ' + req.body.token.replace(/\\n/g, '').replace(/\\\n/g, '');
                 console.log(token);
@@ -30,6 +31,9 @@ app.post('/bind', (req, res) => {
                     res.send('OK');
                 });
             });
+                } else {
+                         res.send('OK');
+                }
         });
     });
 });
